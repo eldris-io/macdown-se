@@ -1,32 +1,41 @@
-# Contributing to MacDown
+# Contributing to MacDown SE
 
-MacDown is open source and is a volunteer effort. This means that it depends on people to give some of their free time to improve it and make it even better.
+MacDown SE is an open-source, community-driven project maintained by Eldris Inc. It depends on contributors and community members to improve, refine, and modernize the application for the entire Mac ecosystem.
 
-If you are reading this, then you are probably curious or want to contribute in some way. Read on to see how you can do so.
+If you want to contribute, we welcome your involvement.
 
-## Getting the Source Code
+---
 
-MacDown is hosted on GitHub:
+## Source Code Repository
 
-https://github.com/MacDownApp/macdown
+MacDown SE is hosted on GitHub:
 
-Here you can get the source code, read through the issues and start contributing.
+https://github.com/eldris-io/macdown-se
 
-## But, I am not a Coder
+You can inspect the codebase, file bug reports, track development milestones, and submit pull requests.
 
-Contribution is not limited to software developers, since there are other ways you can help. For example, contributing towards documentation, translation and support. Join the room on Gitter to see how you can help (see below).
+---
 
-If you want to help translate, then you can look at our project page on [Transifex](https://www.transifex.com/macdown/macdown/) and see whether to add a new languages or complete the work of an existing language.
+## Non-Code Contributions
 
-## Joining the Conversation
+Contribution is not limited to writing Objective-C or C code. You can help by:
+* Reporting reproducible bugs and regression cases.
+* Submitting pull requests for documentation, guides, or stylesheets.
+* Assisting with UI localization and language translations.
+* Sharing feedback and workflow ideas on GitHub Discussions.
 
-If you are new the project, then a good place to start is Gitter:
+---
 
-https://gitter.im/MacDownApp/macdown
+## Community Discussions
 
-Join the room, introduce yourself and find out how you can help out.
+Join the community on GitHub Discussions:
+
+https://github.com/eldris-io/macdown-se/discussions
+
+Introduce yourself, ask questions, share workflows, and suggest improvements.
+
+---
 
 ## License
 
-MacDown is released under the terms of MIT License. For more details take a look at the [README](https://github.com/MacDownApp/macdown/blob/master/README.md).
-
+MacDown SE is released under the terms of the MIT License. For complete licensing details, please refer to the project [README](https://github.com/eldris-io/macdown-se/blob/master/README.md) and the in-app Credits panel.

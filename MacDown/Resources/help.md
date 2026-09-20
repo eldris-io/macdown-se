@@ -1,8 +1,6 @@
-# MacDown
+# MacDown SE
 
-![MacDown logo](https://macdown.uranusjr.com/static/images/logo-160.png)
-
-Hello there! I’m **MacDown**, the open source Markdown editor for OS X.
+Hello there! I’m **MacDown SE**, the native Markdown editor for macOS, running natively on Apple Silicon and Intel.
 
 Let me introduce myself.
 
