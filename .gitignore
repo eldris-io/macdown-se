@@ -192,3 +192,6 @@ Tools/GitHub-style-generator/node_modules/
 MacDown/Resources/Styles/GitHub-2020.css
 MacDown/Resources/Styles/GitHub-2020.css.tmp
 Dependency/*/*/Xcode/
+
+# Local distribution packages
+/dist/
