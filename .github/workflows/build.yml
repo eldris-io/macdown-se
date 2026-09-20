@@ -49,9 +49,9 @@ jobs:
           app=build/Build/Products/Release/MacDown.app
           lipo -info "$app/Contents/MacOS/MacDown"
           for arch in arm64 x86_64; do
-            lipo -verify_arch "$arch" "$app/Contents/MacOS/MacDown"
-            lipo -verify_arch "$arch" "$app/Contents/SharedSupport/bin/macdown"
-            lipo -verify_arch "$arch" "$app/Contents/Frameworks/Sparkle.framework/Versions/A/Sparkle"
+            lipo "$app/Contents/MacOS/MacDown" -verify_arch "$arch"
+            lipo "$app/Contents/SharedSupport/bin/macdown" -verify_arch "$arch"
+            lipo "$app/Contents/Frameworks/Sparkle.framework/Versions/A/Sparkle" -verify_arch "$arch"
           done
           test -s "$app/Contents/Resources/Styles/GitHub-2020.css"
           ditto -c -k --sequesterRsrc --keepParent "$app" MacDown-universal.zip
