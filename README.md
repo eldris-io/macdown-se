@@ -47,37 +47,38 @@ The following editor themes and CSS files are extracted from [Mou](http://mouapp
 
 ### Requirements
 
-If you wish to build MacDown yourself, you will need the following components/tools:
+MacDown builds as a Universal 2 application for macOS 12 or later.
 
-* OS X SDK (10.14 or later)
-* Git
-* [Bundler](http://bundler.io)
-
-> Note: Old versions of CocoaPods are not supported. Please use Bundler to execute CocoaPods, or make sure your CocoaPods is later than shown in `Gemfile.lock`.
-
-> Note: The Command Line Tools (CLT) should be unnecessary. If you failed to compile without it, please install CLT with
->
->     xcode-select --install
->
-> and report back.
-
-An appropriate SDK should be bundled with Xcode 5 or later versions.
+Requirements: Xcode with the macOS SDK, Git, CocoaPods 1.17.0, and Node.js 22
+or later. Local validation uses Xcode 27. The XCTest bundle requires macOS 14
+or later because the current Xcode XCTest framework has that minimum; the app,
+command-line helper, parser, and pods retain their macOS 12 deployment target.
 
 ### Environment Setup
 
-After cloning the repository, run the following commands inside the repository root (directory containing this `README.md` file):
+From the repository root:
 
-    git submodule update --init
-    bundle install
-    bundle exec pod install
-    make -C Dependency/peg-markdown-highlight
+```sh
+git submodule update --init --recursive
+pod install
+npm ci --prefix Tools/GitHub-style-generator
+make -C Tools/GitHub-style-generator
+make -C Dependency/peg-markdown-highlight -j$(sysctl -n hw.ncpu)
+xcodebuild -workspace MacDown.xcworkspace -scheme MacDown -configuration Release \
+  ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO -derivedDataPath build build
+lipo -info build/Build/Products/Release/MacDown.app/Contents/MacOS/MacDown
+```
 
-and open `MacDown.xcworkspace` in Xcode. The first command initialises the dependency submodule(s) used in MacDown; the second one installs dependencies managed by CocoaPods.
+Open `MacDown.xcworkspace` for development. On Apple Silicon, run the tests with:
 
-Refer to the official guides of Git and CocoaPods if you need more instructions. If you run into build issues later on, try running the following commands to update dependencies:
+```sh
+xcodebuild test -workspace MacDown.xcworkspace -scheme MacDown \
+  -destination 'platform=macOS,arch=arm64'
+```
 
-    git submodule update
-    bundle exec pod install
+The GitHub Actions build runs on `macos-14` and `macos-latest`, checks both binary
+architectures, runs native tests, and uploads a zipped app. These CI artifacts
+are development builds, not Developer ID signed or notarized releases.
 
 ### Translation
 

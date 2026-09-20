@@ -72,6 +72,8 @@
 		1F8A8368195348C500B6BF69 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -103,6 +105,8 @@
 		1F8A8369195348C500B6BF69 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -132,6 +136,8 @@
 		1F8A837C195348C500B6BF69 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 			};
 			name = Debug;
@@ -139,6 +145,8 @@
 		1F8A837D195348C500B6BF69 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 			};
 			name = Release;

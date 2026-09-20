@@ -1,0 +1,76 @@
+name: Universal macOS build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Universal 2 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: Tools/GitHub-style-generator/package-lock.json
+      - name: Install dependencies
+        run: |
+          gem install cocoapods -v 1.17.0 --no-document
+          pod install --deployment
+          npm ci --prefix Tools/GitHub-style-generator
+          make -C Tools/GitHub-style-generator
+          make -C Dependency/peg-markdown-highlight -j$(sysctl -n hw.ncpu)
+      - name: Build Universal Release
+        run: |
+          set -o pipefail
+          xcodebuild -version
+          xcodebuild -workspace MacDown.xcworkspace -scheme MacDown \
+            -configuration Release ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
+            -derivedDataPath build build | tee release.log
+      - name: Verify and package app
+        run: |
+          app=build/Build/Products/Release/MacDown.app
+          lipo -info "$app/Contents/MacOS/MacDown"
+          for arch in arm64 x86_64; do
+            lipo -verify_arch "$arch" "$app/Contents/MacOS/MacDown"
+            lipo -verify_arch "$arch" "$app/Contents/SharedSupport/bin/macdown"
+            lipo -verify_arch "$arch" "$app/Contents/Frameworks/Sparkle.framework/Versions/A/Sparkle"
+          done
+          test -s "$app/Contents/Resources/Styles/GitHub-2020.css"
+          ditto -c -k --sequesterRsrc --keepParent "$app" MacDown-universal.zip
+      - name: Run native unit tests
+        run: |
+          set -o pipefail
+          xcodebuild test -workspace MacDown.xcworkspace -scheme MacDown \
+            -destination "platform=macOS,arch=$(uname -m)" \
+            -derivedDataPath build -resultBundlePath TestResults.xcresult | tee tests.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MacDown-universal-${{ matrix.os }}
+          path: MacDown-universal.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-${{ matrix.os }}
+          path: |
+            release.log
+            tests.log
+            TestResults.xcresult
