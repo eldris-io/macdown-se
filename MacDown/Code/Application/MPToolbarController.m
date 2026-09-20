@@ -99,7 +99,7 @@ static CGFloat itemWidth = 37;
 - (NSArray *)toolbarItemIdentifiersFromItemsArray:(NSArray *)toolbarItemsArray {
     NSMutableArray *orderedIdentifiers = [NSMutableArray new];
     
-    for (NSToolbarItem *item in self->toolbarItems) {
+    for (NSToolbarItem *item in toolbarItemsArray) {
         [orderedIdentifiers addObject:item.itemIdentifier];
     }
     
@@ -111,33 +111,26 @@ static CGFloat itemWidth = 37;
     NSInteger selectedIndex = sender.selectedSegment;
     
     NSToolbarItemGroup *selectedGroup = self->toolbarItemIdentifierObjectDictionary[sender.identifier];
+    if (selectedIndex < 0 || (NSUInteger)selectedIndex >= selectedGroup.subitems.count)
+        return;
+
     NSToolbarItem *selectedItem = selectedGroup.subitems[selectedIndex];
-    
-    // Invoke the toolbar item's action
-    // Must convert to IMP to let the compiler know about the method definition
-    MPDocument *document = self.document;
-    IMP imp = [document methodForSelector:selectedItem.action];
-    void (*impFunc)(id) = (void *)imp;
-    impFunc(document);
+    [NSApp sendAction:selectedItem.action to:self.document from:sender];
 }
 
 
 #pragma mark - NSToolbarDelegate
 - (NSArray<NSString *> *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar
 {
-    // From toolbar item dictionary(setupToolbarItems)
-    //NSArray *orderedToolbarItemIdentifiers = [self orderedToolbarDefaultItemKeysForDictionary:self->toolbarItems];
     NSArray *orderedToolbarItemIdentifiers = [self toolbarItemIdentifiersFromItemsArray:self->toolbarItems];
     
     // Mixed identifiers from dictionary and space at below specified indices
     NSMutableArray *defaultItemIdentifiers = [NSMutableArray new];
     
     // Add space after the specified toolbar item indices
-    int spaceAfterIndices[] = {}; // No space in the default set
-    int flexibleSpaceAfterIndices[] = {2, 3, 5, 7, 11};
-    int i = 0;
-    int j = 0;
-    int k = 0;
+    NSSet<NSNumber *> *spaceIndices = [NSSet set];
+    NSSet<NSNumber *> *flexibleSpaceIndices = [NSSet setWithObjects:@2, @3, @5, @7, @11, nil];
+    NSUInteger i = 0;
     
     for (NSString *itemIdentifier in orderedToolbarItemIdentifiers)
     {
@@ -150,16 +143,14 @@ static CGFloat itemWidth = 37;
             [defaultItemIdentifiers addObject:itemIdentifier];
         }
         
-        if (i == spaceAfterIndices[j])
+        if ([spaceIndices containsObject:@(i)])
         {
             [defaultItemIdentifiers addObject:NSToolbarSpaceItemIdentifier];
-            j++;
         }
         
-        if (i == flexibleSpaceAfterIndices[k])
+        if ([flexibleSpaceIndices containsObject:@(i)])
         {
             [defaultItemIdentifiers addObject:NSToolbarFlexibleSpaceItemIdentifier];
-            k++;
         }
         
         i++;
