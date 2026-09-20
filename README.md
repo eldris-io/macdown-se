@@ -2,7 +2,6 @@
 
 The Apple Silicon continuation of the classic native Markdown editor.
 
-[![Build](https://github.com/eldris-io/macdown-se/actions/workflows/build.yml/badge.svg)](https://github.com/eldris-io/macdown-se/actions/workflows/build.yml)
 ![Version](https://img.shields.io/badge/version-1.0.0--SE-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS%2012%2B%20(Apple%20Silicon%20Native)-lightgrey.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -25,7 +24,7 @@ MacDown SE is an open-source, pure native AppKit Markdown editor for macOS. Main
 
 ### Pre-built Apple Silicon Binary
 
-Download the latest `MacDown-SE-Apple-Silicon.zip` from our [GitHub Releases](https://github.com/eldris-io/macdown-se/releases) or automated [Build Actions](https://github.com/eldris-io/macdown-se/actions/workflows/build.yml). Unpack the archive and drag `MacDown SE.app` into your `/Applications` directory.
+Download the latest `MacDown-SE-Apple-Silicon.zip` from our [GitHub Releases](https://github.com/eldris-io/macdown-se/releases). Unpack the archive and drag `MacDown SE.app` into your `/Applications` directory.
 
 ### Command-Line Integration
 
