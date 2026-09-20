@@ -22,9 +22,26 @@ MacDown SE is an open-source, pure native AppKit Markdown editor for macOS. Main
 
 ## Installation
 
-### Pre-built Apple Silicon Binary
+### Homebrew (Recommended)
 
-Download the latest `MacDown-SE-Apple-Silicon.zip` from our [GitHub Releases](https://github.com/eldris-io/macdown-se/releases). Unpack the archive and drag `MacDown SE.app` into your `/Applications` directory.
+Install MacDown SE directly via the official Eldris tap:
+
+```sh
+brew install --cask eldris-io/tap/macdown-se
+```
+
+Or add the tap and install:
+
+```sh
+brew tap eldris-io/tap
+brew install --cask macdown-se
+```
+
+### Pre-built Apple Silicon Disk Image (.dmg)
+
+Download `MacDown-SE-1.0.0.dmg` from our [GitHub Releases](https://github.com/eldris-io/macdown-se/releases). Open the disk image and drag `MacDown SE.app` into your `/Applications` directory.
+
+*(Note: When installed via Homebrew, the command-line utilities `macdown-se` and `macdown` are automatically linked into your PATH).*
 
 ### Command-Line Integration
 
