@@ -45,6 +45,73 @@ git diff | macdown
 
 ---
 
+## AI & Model Context Protocol (MCP)
+
+MacDown SE includes a native MCP server. An AI client can read the active editor
+buffer, replace selected text, insert Markdown, open a new document, and render
+HTML with MacDown's parser. Edits stay in the visible, unsaved document and can
+be undone with **Edit → Undo AI Edit** (⌘Z). Nothing is saved automatically.
+
+For Claude Desktop, add this entry to the `mcpServers` object in
+`~/Library/Application Support/Claude/claude_desktop_config.json`, then restart
+Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "macdown-se": {
+      "command": "/Applications/MacDown SE.app/Contents/SharedSupport/bin/macdown-se",
+      "args": ["--mcp"]
+    }
+  }
+}
+```
+
+For Cursor, use the same server entry in `.cursor/mcp.json` (project) or
+`~/.cursor/mcp.json` (user). For Hermes,
+OOMU, or another client with stdio MCP support, register that executable as the
+server command with `--mcp` as its only argument. Use the actual app location if
+you have not installed it in Applications. The helper starts its bundled app in
+the background on `--mcp` startup when needed; new-document requests display a document window.
+
+| Tool | Arguments | Result |
+| --- | --- | --- |
+| `macdown_get_active_document` | `{}` | Path, title, content, selection, UTF-16 selectedRange, dirty state, word count |
+| `macdown_replace_selection` | `{"text":"replacement"}` | Updated document; replaces highlighted text |
+| `macdown_insert_at_cursor` | `{"text":"inserted text"}` | Updated document; inserts at selection start without deleting selected text |
+| `macdown_new_document` | `{"markdown":"# New document"}` | New unsaved document |
+| `macdown_render_preview` | `{"markdown":"**Hello**"}` | HTML fragment using current parser preferences |
+
+The `macdown://active` resource returns the current buffer as `text/markdown`.
+Document tool results contain a JSON object inside MCP text content; preview
+results contain HTML. With no active document, document operations report an
+error. Focus the intended editor window before asking an AI client to edit it.
+
+The bridge supports MCP protocol `2024-11-05`, using newline-delimited JSON-RPC
+on stdin/stdout. It opens no TCP listener and requires no network service. The
+GUI socket is `~/Library/Application Support/MacDown SE/macdown_se.sock`, with
+owner-only directory/socket permissions and same-user peer checks. Other
+processes running as your macOS user can access this socket. Your chosen AI
+client controls whether document contents are sent to an external model.
+Requests are limited to 8 MiB, with a 15-second socket I/O timeout.
+
+Run live integration tests from a logged-in macOS desktop session after quitting
+MacDown SE (the test refuses to touch an existing session):
+
+```sh
+python3 scripts/test_mcp.py --app "build/Build/Products/Release/MacDown SE.app"
+python3 scripts/test_mcp.py --app "build/Build/Products/Release/MacDown SE.app" --auto-launch --leaks
+```
+
+The test creates disposable unsaved documents and quits its test app without
+saving. `--auto-launch` exercises CLI cold start; `--leaks` additionally requires
+Apple's `leaks` diagnostic to report zero detected leaks for the app and helper.
+The legacy bundled `macdown` command is a symlink to `macdown-se`.
+
+References: [MCP stdio specification](https://modelcontextprotocol.io/specification/2024-11-05/basic/transports),
+[Claude Desktop setup](https://modelcontextprotocol.io/docs/develop/connect-local-servers),
+and [Cursor MCP configuration](https://cursor.com/docs/mcp).
+
 ## Screenshot
 
 ![MacDown SE Screenshot](assets/screenshot.png)

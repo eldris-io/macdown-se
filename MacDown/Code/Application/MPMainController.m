@@ -1,3 +1,5 @@
+#import "MPLocalIPCServer.h"
+#import "MPPlugInController.h"
 //
 //  MPMainController.m
 //  MacDown
@@ -92,6 +94,8 @@ NS_INLINE void treat()
 
 
 @interface MPMainController ()
+@property (strong) MPLocalIPCServer *ipcServer;
+@property (strong) IBOutlet MPPlugInController *plugInController;
 @property (readonly) NSWindowController *preferencesWindowController;
 @end
 
@@ -102,6 +106,8 @@ NS_INLINE void treat()
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+    self.ipcServer = [[MPLocalIPCServer alloc] init];
+    if (![self.ipcServer start]) NSLog(@"MacDown SE: local MCP socket unavailable");
     // Using private API [WebCache setDisabled:YES] to disable WebView's cache
     id webCacheClass = (id)NSClassFromString(@"WebCache");
     if (webCacheClass) {
@@ -121,6 +127,11 @@ NS_INLINE void treat()
         setEventHandler:self
             andSelector:@selector(openUrlSchemeAppleEvent:withReplyEvent:)
           forEventClass:kInternetEventClass andEventID:kAEGetURL];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+    [self.ipcServer stop];
 }
 
 // Open a file from a browser with url of the form :

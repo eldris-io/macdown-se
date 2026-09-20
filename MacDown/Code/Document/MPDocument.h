@@ -12,6 +12,10 @@
 
 @interface MPDocument : NSDocument
 
+@property (nonatomic, readonly) NSTextView *mcpEditor;
+@property (nonatomic, readonly) BOOL mcpIsDirty;
+- (void)mcpDidEdit;
+
 @property (nonatomic, readonly) MPPreferences *preferences;
 @property (readonly) BOOL previewVisible;
 @property (readonly) BOOL editorVisible;

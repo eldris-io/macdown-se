@@ -48,6 +48,7 @@
     [options registerOption:'h' long:kMPHelpKey
                 description:@"Print this help message and exit."
                       flags:GBOptionNoValue];
+    [options registerOption:0 long:@"mcp" description:@"Serve Model Context Protocol over stdin/stdout (use alone)." flags:GBOptionNoValue];
     self.options = options;
 
     self.settings = [[GBSettings alloc] initWithName:@"command-line"

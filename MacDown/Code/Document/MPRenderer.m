@@ -561,6 +561,12 @@ NS_INLINE void MPFreeHTMLRenderer(hoedown_renderer *htmlRenderer)
     }];
 }
 
+- (NSString *)renderMarkdownSynchronously:(NSString *)markdown
+{
+    [self parseMarkdown:markdown];
+    return self.currentHtml;
+}
+
 - (void)parseAndRenderNow
 {
     [self parseAndRenderWithMaxDelay:0];

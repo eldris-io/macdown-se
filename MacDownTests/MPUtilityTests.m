@@ -68,3 +68,62 @@
 }
 
 @end
+
+#import "../MacDown/Code/Application/MPLocalIPCServer.h"
+#import "../MacDown/Code/Document/MPDocument.h"
+
+@interface MPLocalIPCServer (Testing)
+- (NSDictionary *)handle:(NSDictionary *)request;
+@end
+
+@interface MPLocalIPCServerTests : XCTestCase
+@end
+
+@implementation MPLocalIPCServerTests
+- (NSDictionary *)invoke:(NSString *)method params:(NSDictionary *)params server:(MPLocalIPCServer *)server {
+    return [server handle:@{@"jsonrpc":@"2.0", @"id":@1, @"method":method, @"params":params}];
+}
+- (void)testSelectionReplacementAndUndo {
+    MPLocalIPCServer *server = [MPLocalIPCServer new];
+    [self invoke:@"newDocument" params:@{@"markdown":@"Hello 🌍 world"} server:server];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    MPDocument *document = NSDocumentController.sharedDocumentController.documents.lastObject;
+    NSTextView *editor = document.mcpEditor;
+    [document.undoManager removeAllActions];
+    [document updateChangeCount:NSChangeCleared];
+    editor.selectedRange = NSMakeRange(6, 2); // UTF-16 surrogate pair.
+    NSDictionary *reply = [self invoke:@"replaceSelection" params:@{@"text":@"native"} server:server];
+    XCTAssertEqualObjects(reply[@"result"][@"content"], @"Hello native world");
+    XCTAssertEqualObjects(reply[@"result"][@"isDirty"], @YES);
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    XCTAssertTrue(document.isDocumentEdited);
+    XCTAssertEqualObjects(document.undoManager.undoActionName, @"AI Edit");
+    [document.undoManager undo];
+    XCTAssertEqualObjects(editor.string, @"Hello 🌍 world");
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    XCTAssertFalse(document.isDocumentEdited);
+    [document.undoManager redo];
+    XCTAssertEqualObjects(editor.string, @"Hello native world");
+    [document close];
+}
+- (void)testInsertionPreservesSelectionText {
+    MPLocalIPCServer *server = [MPLocalIPCServer new];
+    [self invoke:@"newDocument" params:@{@"markdown":@"abc"} server:server];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    MPDocument *document = NSDocumentController.sharedDocumentController.documents.lastObject;
+    document.mcpEditor.selectedRange = NSMakeRange(1, 2);
+    NSDictionary *reply = [self invoke:@"insertAtCursor" params:@{@"text":@"X"} server:server];
+    XCTAssertEqualObjects(reply[@"result"][@"content"], @"aXbc");
+    [document close];
+}
+- (void)testInvalidInputDoesNotMutateDocument {
+    MPLocalIPCServer *server = [MPLocalIPCServer new];
+    [self invoke:@"newDocument" params:@{@"markdown":@"Keep this"} server:server];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    MPDocument *document = NSDocumentController.sharedDocumentController.documents.lastObject;
+    NSDictionary *reply = [self invoke:@"replaceSelection" params:@{@"text":@42} server:server];
+    XCTAssertEqualObjects(reply[@"error"][@"code"], @(-32602));
+    XCTAssertEqualObjects(document.markdown, @"Keep this");
+    [document close];
+}
+@end

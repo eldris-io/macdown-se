@@ -1,3 +1,4 @@
+#import "MPMCPServer.h"
 //
 //  main.m
 //  macdown-cmd
@@ -76,6 +77,14 @@ int main(int argc, const char * argv[])
 {
     @autoreleasepool
     {
+        for (int i = 1; i < argc; i++) {
+            if (strcmp(argv[i], "--mcp") == 0) {
+                if (argc == 2) return MPRunMCPServer();
+                fprintf(stderr, "macdown-se: --mcp must be used alone\n");
+                return EXIT_FAILURE;
+            }
+        }
+
         MPArgumentProcessor *argproc = [[MPArgumentProcessor alloc] init];
 
         if (argproc.printsHelp)

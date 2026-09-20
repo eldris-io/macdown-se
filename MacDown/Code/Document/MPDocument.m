@@ -185,6 +185,7 @@ typedef NS_ENUM(NSUInteger, MPWordCountType) {
 
 @property (weak) IBOutlet NSToolbar *toolbar;
 @property (weak) IBOutlet MPDocumentSplitView *splitView;
+@property BOOL mcpEditPending;
 @property (weak) IBOutlet NSView *editorContainer;
 @property (unsafe_unretained) IBOutlet MPEditorView *editor;
 @property (weak) IBOutlet NSLayoutConstraint *editorPaddingBottom;
@@ -255,6 +256,21 @@ static void (^MPGetPreviewLoadingCompletionHandler(MPDocument *doc))()
 @implementation MPDocument
 
 #pragma mark - Accessor
+
+- (NSTextView *)mcpEditor { return self.editor; }
+
+- (BOOL)mcpIsDirty { return self.mcpEditPending || self.isDocumentEdited; }
+
+- (void)mcpDidEdit
+{
+    // NSDocument processes undo change notifications on the next run-loop turn.
+    // Report the real, already-applied edit while that notification is pending.
+    self.mcpEditPending = YES;
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(mcpEditDidSettle) object:nil];
+    [self performSelector:@selector(mcpEditDidSettle) withObject:nil afterDelay:0];
+}
+
+- (void)mcpEditDidSettle { self.mcpEditPending = NO; }
 
 - (MPPreferences *)preferences
 {

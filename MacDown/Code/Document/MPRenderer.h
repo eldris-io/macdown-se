@@ -25,6 +25,7 @@ typedef NS_ENUM(NSUInteger, MPCodeBlockAccessoryType)
 @property (weak) id<MPRendererDataSource> dataSource;
 @property (weak) id<MPRendererDelegate> delegate;
 
+- (NSString *)renderMarkdownSynchronously:(NSString *)markdown;
 - (void)parseAndRenderNow;
 - (void)parseAndRenderLater;
 - (void)parseIfPreferencesChanged;

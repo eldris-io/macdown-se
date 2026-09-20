@@ -53,9 +53,10 @@ jobs:
           lipo -info "$app/Contents/MacOS/MacDown SE"
           for arch in arm64 x86_64; do
             lipo "$app/Contents/MacOS/MacDown SE" -verify_arch "$arch"
-            lipo "$app/Contents/SharedSupport/bin/macdown" -verify_arch "$arch"
+            lipo "$app/Contents/SharedSupport/bin/macdown-se" -verify_arch "$arch"
             lipo "$app/Contents/Frameworks/Sparkle.framework/Versions/A/Sparkle" -verify_arch "$arch"
           done
+          test "$(readlink "$app/Contents/SharedSupport/bin/macdown")" = macdown-se
           test -s "$app/Contents/Resources/Styles/GitHub-2020.css"
           ditto -c -k --sequesterRsrc --keepParent "$app" MacDown-SE-universal.zip
       - name: Run native unit tests

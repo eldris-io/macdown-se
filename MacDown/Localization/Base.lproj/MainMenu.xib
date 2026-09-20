@@ -623,7 +623,11 @@ DQ
                 </menuItem>
             </items>
         </menu>
-        <customObject id="eq0-c4-vgQ" customClass="MPMainController"/>
+        <customObject id="eq0-c4-vgQ" customClass="MPMainController">
+            <connections>
+                <outlet property="plugInController" destination="N0l-eA-KkD" id="MCP-Plugin-Owner"/>
+            </connections>
+        </customObject>
         <customObject id="Zfp-OK-9bN" customClass="SUUpdater">
             <connections>
                 <outlet property="delegate" destination="eq0-c4-vgQ" id="UJV-6a-eCL"/>
