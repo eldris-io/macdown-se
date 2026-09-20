@@ -1,4 +1,4 @@
-name: Universal macOS build
+name: Native Apple Silicon macOS build
 
 on:
   push:
@@ -10,13 +10,9 @@ permissions:
 
 jobs:
   build:
-    name: Universal 2 (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-14, macos-latest]
+    name: Apple Silicon (arm64)
+    runs-on: macos-14
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,12 +33,12 @@ jobs:
           npm ci --prefix Tools/GitHub-style-generator
           make -C Tools/GitHub-style-generator
           make -C Dependency/peg-markdown-highlight -j$(sysctl -n hw.ncpu)
-      - name: Build Universal Release
+      - name: Build Native Release
         run: |
           set -o pipefail
           xcodebuild -version
           xcodebuild -workspace MacDown.xcworkspace -scheme MacDown \
-            -configuration Release ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
+            -configuration Release ARCHS="arm64" ONLY_ACTIVE_ARCH=YES \
             -derivedDataPath build build | tee release.log
       - name: Verify and package app
         run: |
@@ -51,29 +47,26 @@ jobs:
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist")" = 1.0.0
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$app/Contents/Info.plist")" = 1
           lipo -info "$app/Contents/MacOS/MacDown SE"
-          for arch in arm64 x86_64; do
-            lipo "$app/Contents/MacOS/MacDown SE" -verify_arch "$arch"
-            lipo "$app/Contents/SharedSupport/bin/macdown-se" -verify_arch "$arch"
-            lipo "$app/Contents/Frameworks/Sparkle.framework/Versions/A/Sparkle" -verify_arch "$arch"
-          done
+          lipo "$app/Contents/MacOS/MacDown SE" -verify_arch arm64
+          lipo "$app/Contents/SharedSupport/bin/macdown-se" -verify_arch arm64
           test "$(readlink "$app/Contents/SharedSupport/bin/macdown")" = macdown-se
           test -s "$app/Contents/Resources/Styles/GitHub-2020.css"
-          ditto -c -k --sequesterRsrc --keepParent "$app" MacDown-SE-universal.zip
+          ditto -c -k --sequesterRsrc --keepParent "$app" MacDown-SE-Apple-Silicon.zip
       - name: Run native unit tests
         run: |
           set -o pipefail
           xcodebuild test -workspace MacDown.xcworkspace -scheme MacDown \
-            -destination "platform=macOS,arch=$(uname -m)" \
+            -destination "platform=macOS,arch=arm64" \
             -derivedDataPath build -resultBundlePath TestResults.xcresult | tee tests.log
       - uses: actions/upload-artifact@v4
         with:
-          name: MacDown-SE-universal-${{ matrix.os }}
-          path: MacDown-SE-universal.zip
+          name: MacDown-SE-Apple-Silicon
+          path: MacDown-SE-Apple-Silicon.zip
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: validation-${{ matrix.os }}
+          name: validation-arm64
           path: |
             release.log
             tests.log

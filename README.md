@@ -4,17 +4,17 @@ The Apple Silicon continuation of the classic native Markdown editor.
 
 [![Build](https://github.com/eldris-io/macdown-se/actions/workflows/build.yml/badge.svg)](https://github.com/eldris-io/macdown-se/actions/workflows/build.yml)
 ![Version](https://img.shields.io/badge/version-1.0.0--SE-blue.svg)
-![Platform](https://img.shields.io/badge/platform-macOS%2012%2B%20(Apple%20Silicon%20%7C%20Intel)-lightgrey.svg)
+![Platform](https://img.shields.io/badge/platform-macOS%2012%2B%20(Apple%20Silicon%20Native)-lightgrey.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-MacDown SE is an open-source, pure native AppKit Markdown editor for macOS. Maintained by Eldris Inc. and released under the terms of the MIT License, MacDown SE continues the beloved foundation created by Tzu-ping Chung (uranusjr) between 2014 and 2020, modernizing it for Apple Silicon and modern macOS.
+MacDown SE is an open-source, pure native AppKit Markdown editor for macOS. Maintained by Eldris Inc. and released under the terms of the MIT License, MacDown SE continues the beloved foundation created by Tzu-ping Chung (uranusjr) between 2014 and 2020, modernizing it exclusively for Apple Silicon and modern macOS.
 
 ---
 
 ## Why MacDown SE?
 
 * **Pure Native AppKit:** Sub-second launch times, minimal memory consumption, and zero Electron or Chromium battery drain.
-* **Universal 2 Architecture:** Fully native execution on Apple Silicon (M-series) and Intel Macs, supporting macOS 12 Monterey through modern macOS.
+* **Native Apple Silicon Architecture:** Built exclusively for Apple Silicon (M-series), delivering maximum efficiency and instantaneous performance on macOS 12 Monterey through modern macOS.
 * **Synchronized Live Preview:** Dual-pane editor with instant HTML rendering and synchronized vertical scrolling.
 * **Completely Private and Offline:** Zero telemetry, zero analytics, zero network tracking, and zero cloud lock-in. Your files live on your Mac.
 * **Comprehensive Syntax:** Full support for standard Markdown, CommonMark, GitHub-Flavored Markdown tables, task lists, Jekyll YAML front matter, TeX math rendering, and Prism syntax highlighting for fenced code blocks.
@@ -23,9 +23,9 @@ MacDown SE is an open-source, pure native AppKit Markdown editor for macOS. Main
 
 ## Installation
 
-### Pre-built Universal Binary
+### Pre-built Apple Silicon Binary
 
-Download the latest `MacDown-SE-universal.zip` from our [GitHub Releases](https://github.com/eldris-io/macdown-se/releases) or automated [Build Actions](https://github.com/eldris-io/macdown-se/actions/workflows/build.yml). Unpack the archive and drag `MacDown SE.app` into your `/Applications` directory.
+Download the latest `MacDown-SE-Apple-Silicon.zip` from our [GitHub Releases](https://github.com/eldris-io/macdown-se/releases) or automated [Build Actions](https://github.com/eldris-io/macdown-se/actions/workflows/build.yml). Unpack the archive and drag `MacDown SE.app` into your `/Applications` directory.
 
 ### Command-Line Integration
 
@@ -145,11 +145,11 @@ make -C Tools/GitHub-style-generator
 make -C Dependency/peg-markdown-highlight -j$(sysctl -n hw.ncpu)
 ```
 
-Compile a Universal 2 Release build:
+Compile a Native Apple Silicon Release build:
 
 ```sh
 xcodebuild -workspace MacDown.xcworkspace -scheme MacDown -configuration Release \
-  ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO -derivedDataPath build build
+  ARCHS="arm64" ONLY_ACTIVE_ARCH=YES -derivedDataPath build build
 ```
 
 The resulting `MacDown SE.app` will be available in:
