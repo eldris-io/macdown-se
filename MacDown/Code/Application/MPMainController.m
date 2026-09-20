@@ -106,6 +106,7 @@ NS_INLINE void treat()
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+    self.plugInController.documentController = NSDocumentController.sharedDocumentController;
     self.ipcServer = [[MPLocalIPCServer alloc] init];
     if (![self.ipcServer start]) NSLog(@"MacDown SE: local MCP socket unavailable");
     // Using private API [WebCache setDisabled:YES] to disable WebView's cache

@@ -633,12 +633,7 @@ DQ
                 <outlet property="delegate" destination="eq0-c4-vgQ" id="UJV-6a-eCL"/>
             </connections>
         </customObject>
-        <customObject id="LEY-zf-22t" customClass="NSDocumentController"/>
-        <customObject id="N0l-eA-KkD" customClass="MPPlugInController">
-            <connections>
-                <outlet property="documentController" destination="LEY-zf-22t" id="9rV-l0-Wfs"/>
-            </connections>
-        </customObject>
+        <customObject id="N0l-eA-KkD" customClass="MPPlugInController"/>
         <userDefaultsController representsSharedInstance="YES" id="ow1-Qr-nTV"/>
     </objects>
 </document>

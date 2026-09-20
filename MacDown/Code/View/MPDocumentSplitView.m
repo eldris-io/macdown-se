@@ -48,7 +48,9 @@
 
     CGFloat totalWidth = self.frame.size.width - self.dividerThickness;
     CGFloat leftWidth = [parts[0] frame].size.width;
-    return leftWidth / totalWidth;
+    if ([parts[0] isHidden] || leftWidth <= 0.0) return 0.0;
+    if ([parts[1] isHidden] || [parts[1] frame].size.width <= 0.0) return 1.0;
+    return totalWidth > 0.0 ? leftWidth / totalWidth : 0.5;
 }
 
 - (void)setDividerLocation:(CGFloat)ratio
@@ -56,21 +58,32 @@
     NSArray *parts = self.subviews;
     NSAssert1(parts.count == 2, @"%@ should only be used on two-item splits.",
               NSStringFromSelector(_cmd));
-    if (ratio < 0.0)
-        ratio = 0.0;
-    else if (ratio > 1.0)
-        ratio = 1.0;
-    CGFloat dividerThickness = self.dividerThickness;
-    CGFloat totalWidth = self.frame.size.width - dividerThickness;
-    CGFloat leftWidth = totalWidth * ratio;
-    CGFloat rightWidth = totalWidth - leftWidth;
+    ratio = isfinite(ratio) ? MIN(1.0, MAX(0.0, ratio)) : 0.5;
     NSView *left = parts[0];
     NSView *right = parts[1];
+    left.hidden = NO;
+    right.hidden = NO;
 
-    left.frame = NSMakeRect(0.0, 0.0, leftWidth, left.frame.size.height);
-    right.frame = NSMakeRect(leftWidth + dividerThickness, 0.0,
-                             rightWidth, right.frame.size.height);
+    CGFloat width = NSWidth(self.bounds);
+    CGFloat height = NSHeight(self.bounds);
+    CGFloat divider = self.dividerThickness;
+    CGFloat available = MAX(0.0, width - divider);
+    CGFloat leftWidth = available * ratio;
+    // Restore real frames before asking AppKit to position a collapsed divider.
+    left.frame = NSMakeRect(0.0, 0.0, leftWidth, height);
+    right.frame = NSMakeRect(leftWidth + divider, 0.0, available - leftWidth, height);
+    [self adjustSubviews];
     [self setPosition:leftWidth ofDividerAtIndex:0];
+    if (ratio == 0.0 || ratio == 1.0)
+    {
+        left.hidden = ratio == 0.0;
+        right.hidden = ratio == 1.0;
+        left.frame = NSMakeRect(0.0, 0.0, ratio == 0.0 ? 0.0 : width, height);
+        right.frame = NSMakeRect(ratio == 0.0 ? 0.0 : width, 0.0,
+                                 ratio == 1.0 ? 0.0 : width, height);
+    }
+    [self setNeedsDisplay:YES];
+
 }
 
 - (void)swapViews

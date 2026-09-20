@@ -126,7 +126,7 @@ NS_INLINE NSColor *MPGetWebViewBackgroundColor(WebView *webview)
 @implementation MPPreferences (Hoedown)
 - (int)extensionFlags
 {
-    int flags = 0;
+    int flags = HOEDOWN_EXT_LAX_SPACING;
     if (self.extensionAutolink)
         flags |= HOEDOWN_EXT_AUTOLINK;
     if (self.extensionFencedCode)
@@ -705,6 +705,19 @@ static void (^MPGetPreviewLoadingCompletionHandler(MPDocument *doc))()
 
 
 #pragma mark - NSSplitViewDelegate
+
+- (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
+{
+    return YES;
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView shouldHideDividerAtIndex:(NSInteger)index
+{
+    for (NSView *view in splitView.subviews)
+        if (view.hidden || [splitView isSubviewCollapsed:view])
+            return YES;
+    return NO;
+}
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification
 {
@@ -1517,20 +1530,19 @@ static void (^MPGetPreviewLoadingCompletionHandler(MPDocument *doc))()
     if (isVisible)
     {
         CGFloat oldRatio = self.splitView.dividerLocation;
-        if (oldRatio != 0.0 && oldRatio != 1.0)
+        if (isfinite(oldRatio) && oldRatio > 0.0 && oldRatio < 1.0)
         {
-            // We don't want to save these values, since they are meaningless.
-            // The user should be able to switch between 100% editor and 100%
-            // preview without losing the old ratio.
+            // Remember only a two-pane layout, so switching between collapsed
+            // panes does not overwrite the position used for restoration.
             self.previousSplitRatio = oldRatio;
         }
         [self setSplitViewDividerLocation:targetRatio];
     }
     else
     {
-        // We have an inconsistency here, let's just go back to 0.5,
-        // otherwise nothing will happen
-        if (self.previousSplitRatio < 0.0)
+        // A collapsed or uninitialized saved position cannot restore both panes.
+        if (!isfinite(self.previousSplitRatio) || self.previousSplitRatio <= 0.0
+                || self.previousSplitRatio >= 1.0)
             self.previousSplitRatio = 0.5;
 
         [self setSplitViewDividerLocation:self.previousSplitRatio];

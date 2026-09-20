@@ -27,7 +27,10 @@ target "macdown-cmd" do
   pod 'GBCli', '~> 1.1'
 end
 
+require_relative 'Tools/patch_hoedown'
+
 post_install do |installer|
+  patch_hoedown(File.join(installer.sandbox.root, 'hoedown'))
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '12.0'
