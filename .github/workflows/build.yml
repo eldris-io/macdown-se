@@ -46,15 +46,18 @@ jobs:
             -derivedDataPath build build | tee release.log
       - name: Verify and package app
         run: |
-          app=build/Build/Products/Release/MacDown.app
-          lipo -info "$app/Contents/MacOS/MacDown"
+          app="build/Build/Products/Release/MacDown SE.app"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Contents/Info.plist")" = io.eldris.macdown-se
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist")" = 1.0.0
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$app/Contents/Info.plist")" = 1
+          lipo -info "$app/Contents/MacOS/MacDown SE"
           for arch in arm64 x86_64; do
-            lipo "$app/Contents/MacOS/MacDown" -verify_arch "$arch"
+            lipo "$app/Contents/MacOS/MacDown SE" -verify_arch "$arch"
             lipo "$app/Contents/SharedSupport/bin/macdown" -verify_arch "$arch"
             lipo "$app/Contents/Frameworks/Sparkle.framework/Versions/A/Sparkle" -verify_arch "$arch"
           done
           test -s "$app/Contents/Resources/Styles/GitHub-2020.css"
-          ditto -c -k --sequesterRsrc --keepParent "$app" MacDown-universal.zip
+          ditto -c -k --sequesterRsrc --keepParent "$app" MacDown-SE-universal.zip
       - name: Run native unit tests
         run: |
           set -o pipefail
@@ -63,8 +66,8 @@ jobs:
             -derivedDataPath build -resultBundlePath TestResults.xcresult | tee tests.log
       - uses: actions/upload-artifact@v4
         with:
-          name: MacDown-universal-${{ matrix.os }}
-          path: MacDown-universal.zip
+          name: MacDown-SE-universal-${{ matrix.os }}
+          path: MacDown-SE-universal.zip
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()

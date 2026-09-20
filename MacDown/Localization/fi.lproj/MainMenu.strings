@@ -7,8 +7,8 @@
 /* Class = "NSMenuItem"; title = "Enter Full Screen"; ObjectID = "1gz-YB-DZE"; */
 "1gz-YB-DZE.title" = "Siirry koko näytön tilaan";
 
-/* Class = "NSMenuItem"; title = "MacDown"; ObjectID = "1Xt-HY-uBw"; */
-"1Xt-HY-uBw.title" = "MacDown";
+/* Class = "NSMenuItem"; title = "MacDown SE"; ObjectID = "1Xt-HY-uBw"; */
+"1Xt-HY-uBw.title" = "MacDown SE";
 
 /* Class = "NSMenuItem"; title = "Transformations"; ObjectID = "2oI-Rn-ZJC"; */
 "2oI-Rn-ZJC.title" = "Muunnokset";
@@ -25,13 +25,13 @@
 /* Class = "NSMenuItem"; title = "Find"; ObjectID = "4EN-yA-p0u"; */
 "4EN-yA-p0u.title" = "Etsi";
 
-/* Class = "NSMenuItem"; title = "Quit MacDown"; ObjectID = "4sb-4s-VLi"; */
-"4sb-4s-VLi.title" = "Lopeta MacDown";
+/* Class = "NSMenuItem"; title = "Quit MacDown SE"; ObjectID = "4sb-4s-VLi"; */
+"4sb-4s-VLi.title" = "Lopeta MacDown SE";
 
 /* Class = "NSMenuItem"; title = "Emphasize"; ObjectID = "4UH-k2-fgy"; */
 "4UH-k2-fgy.title" = "Painota";
 
-/* Class = "NSMenuItem"; title = "About MacDown"; ObjectID = "5kV-Vb-QxS"; */
+/* Class = "NSMenuItem"; title = "About MacDown SE"; ObjectID = "5kV-Vb-QxS"; */
 "5kV-Vb-QxS.title" = "Tietoja MacDownista";
 
 /* Class = "NSMenuItem"; title = "Export"; ObjectID = "5mp-ev-1el"; */

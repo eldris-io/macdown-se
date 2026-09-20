@@ -24,8 +24,8 @@ OPENSSL = '/usr/bin/openssl'
 OSASCRIPT = '/usr/bin/osascript'
 
 BUILD_DIR = os.path.join(ROOT_DIR, 'Build')
-APP_NAME = 'MacDown.app'
-ZIP_NAME = 'MacDown.app.zip'
+APP_NAME = 'MacDown SE.app'
+ZIP_NAME = 'MacDown-SE-universal.zip'
 
 TERM_ENCODING = 'utf-8'
 

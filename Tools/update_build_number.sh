@@ -1,24 +1,12 @@
 #!/bin/bash
 
-if [ "$CI" == "true" ]; then
-    echo "Skipping build number update script under CI."
-    exit 0
-fi
-
-# Source: https://gist.github.com/karlvr/c93a98d7000ecb163895
-
-# This script automatically sets the version and short version string of
-# an Xcode project from the Git repository containing the project.
-#
-# To use this script in Xcode, add the script's path to a "Run Script" build
-# phase for your application target.
+# Keep GUI and CLI release versions aligned with the source Info.plist.
+# Git provenance is recorded separately in CFBundleBuildVersion.
 
 set -o errexit
 set -o nounset
 
-pushd `dirname $0` > /dev/null
-source $(pwd -P)/utils.sh
-popd > /dev/null
+source "$(dirname "$0")/utils.sh"
 
 BUILD_VERSION=$(get_build_version)
 SHORT_VERSION=$(get_short_version)
