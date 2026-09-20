@@ -1,133 +1,70 @@
+# MacDown SE
 
-# Graph Visualization
+The Apple Silicon continuation of the classic native Markdown editor for macOS.
 
-Two graph visualization grammer are supported, mermaid and graphviz.
-To enable these features, options `Mermaid` and/or `Graphviz` in `MacDown` -> `Perferences...` -> `Rendering` should be checked.
+**Pure Native AppKit** • **Apple Silicon Native (arm64)** • **Zero Telemetry** • **Model Context Protocol (MCP)**
 
-# Mermaid
+---
 
-[mermaid](https://github.com/knsv/mermaid) has 3 diagram syntax.
+## Instant Synchronized Preview
 
-## Flow Chart
+MacDown SE combines a lightweight Cocoa editor with an instantaneous HTML preview pane. Type on the left, see rendered output on the right, with smooth synchronized scrolling.
 
+> "Simplicity is about subtracting the obvious and adding the meaningful."  
+> John Maeda, *The Laws of Simplicity*
 
-```mermaid
-graph TD;
-A-->B;
-A-->C;
-B-->D;
-C-->D;
+### Core Architectural Profile
+
+| Capability | Implementation | Operating Profile |
+| :--- | :--- | :--- |
+| **User Interface** | Pure AppKit Cocoa | Sub-second launch, zero Electron bloat |
+| **Architecture** | Apple Silicon (`arm64`) | Optimized for M1 through modern M-series chips |
+| **Intelligence** | Model Context Protocol | Built-in stdio MCP server for local AI workflows |
+| **Privacy** | Sovereign & Local | Zero telemetry, zero analytics, zero network tracking |
+| **Licensing** | Open Source | MIT License, maintained by Eldris Inc. |
+
+---
+
+## Model Context Protocol (MCP) Integration
+
+MacDown SE includes an integrated MCP server via its command-line tool. Any AI harness, agent, or client supporting the MCP standard can inspect and edit the active buffer in real time:
+
+```python
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+server_params = StdioServerParameters(
+    command="macdown-se",
+    args=["--mcp"]
+)
+
+async def inspect_editor():
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            doc = await session.call_tool("macdown_get_active_document", {})
+            print(f"Loaded: {doc.title} ({len(doc.content)} bytes)")
+
+asyncio.run(inspect_editor())
 ```
 
-## Sequence Diagram
+---
 
-```mermaid
-sequenceDiagram
-participant Alice
-participant Bob
-Alice->>John: Hello John, how are you?
-loop Healthcheck
-John->>John: Fight against hypochondria
-end
-Note right of John: Rational thoughts <br/>prevail...
-John-->>Alice: Great!
-John->>Bob: How about you?
-Bob-->>John: Jolly good!
-```
+## Engineering Checklist
 
-## Gantt
+- [x] Native Apple Silicon 64-bit (`arm64`) execution
+- [x] Model Context Protocol stdio server with AppKit IPC bridge
+- [x] Relaxed CommonMark and GFM list syntax parsing
+- [x] Dynamic split view restoration and pane state management
+- [x] Hardened Runtime and Apple Notary Service Gatekeeper compliance
 
-```mermaid
-gantt
-title A Gantt Diagram
+---
 
-section Section
-A task           :a1, 2014-01-01, 30d
-Another task     :after a1  , 20d
-section Another
-Task in sec      :2014-01-12  , 12d
-anther task      : 24d
-```
+## Mathematical Typesetting
 
-# Graphviz
-> Graphviz is open source graph visualization software. Graph visualization is a way of representing structural information as diagrams of abstract graphs and networks. It has important applications in networking, bioinformatics,  software engineering, database and web design, machine learning, and in visual interfaces for other technical domains.
+Full support for TeX and LaTeX mathematical equations via MathJax:
 
+$$f(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left( -\frac{1}{2}\left(\frac{x - \mu}{\sigma}\right)^{\!2}\,\right)$$
 
-Please refer to [Graphviz website](http://www.graphviz.org/Home.php) for details.
-
-## Graphviz Engines
-
-* circo
-* dot
-* fdp
-* neato
-* osage
-* twopi
-
-Here are some samples.
-
-## Hashmap
-
-
-```dot
-digraph G {
-nodesep=.05;
-rankdir=LR;
-
-node [shape=record,width=1.1,height=.1];
-node0 [label = "<f0> |<f1> |<f2> |<f3> |<f4> |<f5> |<f6> | ", height=2.5];
-
-node [width = 1.5];
-node1 [label = "{<n> n14 | 719 |<p> }"];
-node2 [label = "{<n> a1 | 805 |<p> }"];
-node3 [label = "{<n> i9 | 718 |<p> }"];
-node4 [label = "{<n> e5 | 989 |<p> }"];
-node5 [label = "{<n> t20 | 959 |<p> }"] ;
-node6 [label = "{<n> o15 | 794 |<p> }"] ;
-node7 [label = "{<n> s19 | 659 |<p> }"] ;
-
-node0:f0 -> node1:n;
-node0:f1 -> node2:n;
-node0:f2 -> node3:n;
-node0:f5 -> node4:n;
-node0:f6 -> node5:n;
-node2:p -> node6:n;
-node4:p -> node7:n;
-}
-```
-
-## Process diagram with clusters
-
-
-```dot
-digraph G {
-
-subgraph cluster0 {
-  node [style=filled,color=white];
-  style=filled;
-  color=lightgrey;
-  a0 -> a1 -> a2 -> a3;
-  label = "process #1";
-}
-
-subgraph cluster1 {
-  node [style=filled];
-  b0 -> b1 -> b2 -> b3;
-  label = "process #2";
-  color=blue
-}
-
-start -> a0;
-start -> b0;
-a1 -> b3;
-b2 -> a3;
-a3 -> a0;
-a3 -> end;
-b3 -> end;
-start [shape=Mdiamond];
-end [shape=Msquare];
-}
-
-```
-
-
+*MacDown SE is maintained by Eldris Inc. and published under the MIT License.*

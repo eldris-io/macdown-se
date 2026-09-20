@@ -1,6 +1,6 @@
 # MacDown SE
 
-Hello there! I’m **MacDown SE**, the native Markdown editor for macOS, running natively on Apple Silicon and Intel.
+Hello there! I’m **MacDown SE**, the native Markdown editor for macOS, running exclusively and natively on Apple Silicon.
 
 Let me introduce myself.
 
