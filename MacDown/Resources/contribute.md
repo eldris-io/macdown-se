@@ -10,7 +10,7 @@ If you want to contribute, we welcome your involvement.
 
 MacDown SE is hosted on GitHub:
 
-https://github.com/eldris-io/macdown-se
+<https://github.com/eldris-io/macdown-se>
 
 You can inspect the codebase, file bug reports, track development milestones, and submit pull requests.
 
@@ -30,7 +30,7 @@ Contribution is not limited to writing Objective-C or C code. You can help by:
 
 Join the community on GitHub Discussions:
 
-https://github.com/eldris-io/macdown-se/discussions
+<https://github.com/eldris-io/macdown-se/discussions>
 
 Introduce yourself, ask questions, share workflows, and suggest improvements.
 
